@@ -1,0 +1,285 @@
+{
+  "entities": {
+    "User": {
+      "title": "User",
+      "description": "User profile with role (teacher or parent) and child link for parents",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string" },
+        "email": { "type": "string" },
+        "displayName": { "type": "string" },
+        "role": { "type": "string", "enum": ["teacher", "parent"] },
+        "linkedStudentId": { "type": "string" },
+        "linkedStudentCode": { "type": "string" },
+        "createdAt": { "type": "string" }
+      },
+      "required": ["id", "email", "role", "createdAt"]
+    },
+    "Student": {
+      "title": "Student",
+      "description": "Official student record of Class 6/13",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string" },
+        "code": { "type": "string" },
+        "fullName": { "type": "string" },
+        "dob": { "type": "string" },
+        "gender": { "type": "string", "enum": ["Nam", "Nữ"] },
+        "group": { "type": "string", "enum": ["Tổ 1", "Tổ 2", "Tổ 3", "Tổ 4"] },
+        "guardianName": { "type": "string" },
+        "guardianPhone": { "type": "string" },
+        "guardianRelationship": { "type": "string" },
+        "address": { "type": "string" },
+        "notesStudy": { "type": "string" },
+        "notesDiscipline": { "type": "string" },
+        "strengths": { "type": "string" },
+        "personalGoals": { "type": "string" },
+        "supportMeasures": { "type": "string" },
+        "needsAttention": { "type": "boolean" },
+        "attentionTags": { "type": "array" },
+        "createdAt": { "type": "string" }
+      },
+      "required": ["id", "code", "fullName", "dob", "gender", "group"]
+    },
+    "AttendanceRecord": {
+      "title": "AttendanceRecord",
+      "description": "Session attendance log for a student",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string" },
+        "date": { "type": "string" },
+        "session": { "type": "string", "enum": ["Sáng", "Chiều"] },
+        "studentId": { "type": "string" },
+        "status": { "type": "string", "enum": ["present", "excused", "unexcused", "late", "other"] },
+        "reason": { "type": "string" },
+        "timeRecorded": { "type": "string" }
+      },
+      "required": ["id", "date", "session", "studentId", "status"]
+    },
+    "TaskItem": {
+      "title": "TaskItem",
+      "description": "Assigned class, group or student task",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string" },
+        "title": { "type": "string" },
+        "description": { "type": "string" },
+        "assignedToType": { "type": "string", "enum": ["all", "group", "student"] },
+        "targetGroup": { "type": "string" },
+        "targetStudentId": { "type": "string" },
+        "assignedDate": { "type": "string" },
+        "dueDate": { "type": "string" },
+        "priority": { "type": "string" },
+        "criteria": { "type": "string" },
+        "status": { "type": "string" },
+        "resultNote": { "type": "string" },
+        "bonusPoints": { "type": "number" },
+        "createdAt": { "type": "string" }
+      },
+      "required": ["id", "title", "assignedToType", "dueDate", "status"]
+    },
+    "CompetitionLog": {
+      "title": "CompetitionLog",
+      "description": "Weekly competition score point log",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string" },
+        "studentId": { "type": "string" },
+        "studentName": { "type": "string" },
+        "group": { "type": "string" },
+        "weekNumber": { "type": "number" },
+        "ruleId": { "type": "string" },
+        "ruleName": { "type": "string" },
+        "points": { "type": "number" },
+        "reason": { "type": "string" },
+        "recordedAt": { "type": "string" },
+        "verified": { "type": "boolean" }
+      },
+      "required": ["id", "studentId", "weekNumber", "points", "ruleName"]
+    },
+    "ParentNotice": {
+      "title": "ParentNotice",
+      "description": "Announcement or notice to parents",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string" },
+        "title": { "type": "string" },
+        "rawText": { "type": "string" },
+        "finalContent": { "type": "string" },
+        "mode": { "type": "string" },
+        "styleModifier": { "type": "string" },
+        "status": { "type": "string" },
+        "createdAt": { "type": "string" }
+      },
+      "required": ["id", "title", "finalContent", "status"]
+    },
+    "ParentContactLog": {
+      "title": "ParentContactLog",
+      "description": "Log of communication between teacher and parents",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string" },
+        "studentId": { "type": "string" },
+        "studentName": { "type": "string" },
+        "guardianName": { "type": "string" },
+        "date": { "type": "string" },
+        "topic": { "type": "string" },
+        "summary": { "type": "string" },
+        "channel": { "type": "string" },
+        "outcome": { "type": "string" },
+        "nextAction": { "type": "string" },
+        "status": { "type": "string" }
+      },
+      "required": ["id", "studentId", "topic", "summary", "date"]
+    },
+    "StudentQuickNote": {
+      "title": "StudentQuickNote",
+      "description": "Teacher observation note for student",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string" },
+        "studentId": { "type": "string" },
+        "studentName": { "type": "string" },
+        "group": { "type": "string" },
+        "date": { "type": "string" },
+        "category": { "type": "string" },
+        "content": { "type": "string" },
+        "priority": { "type": "string" },
+        "plannedAction": { "type": "string" },
+        "status": { "type": "string" },
+        "createdAt": { "type": "string" }
+      },
+      "required": ["id", "studentId", "category", "content", "date"]
+    },
+    "EducationGuidancePlan": {
+      "title": "EducationGuidancePlan",
+      "description": "Positive education guidance plan for a student",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string" },
+        "studentId": { "type": "string" },
+        "studentName": { "type": "string" },
+        "studentCode": { "type": "string" },
+        "date": { "type": "string" },
+        "behaviorDescription": { "type": "string" },
+        "status": { "type": "string" }
+      },
+      "required": ["id", "studentId", "behaviorDescription", "status"]
+    },
+    "DailyWeeklyTodo": {
+      "title": "DailyWeeklyTodo",
+      "description": "Teacher planner todo item",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string" },
+        "title": { "type": "string" },
+        "scope": { "type": "string" },
+        "dueDate": { "type": "string" },
+        "priority": { "type": "string" },
+        "isCompleted": { "type": "boolean" },
+        "category": { "type": "string" }
+      },
+      "required": ["id", "title", "dueDate", "isCompleted"]
+    },
+    "AppSettings": {
+      "title": "AppSettings",
+      "description": "Class 6/13 general settings",
+      "type": "object",
+      "properties": {
+        "className": { "type": "string" },
+        "teacherName": { "type": "string" },
+        "schoolName": { "type": "string" },
+        "academicYear": { "type": "string" },
+        "currentWeek": { "type": "number" }
+      },
+      "required": ["className", "teacherName", "schoolName"]
+    },
+    "ClassMediaItem": {
+      "title": "ClassMediaItem",
+      "description": "Photos and video clips of Class 6/13 memory gallery",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string" },
+        "title": { "type": "string" },
+        "type": { "type": "string", "enum": ["photo", "video"] },
+        "url": { "type": "string" },
+        "album": { "type": "string" },
+        "caption": { "type": "string" },
+        "date": { "type": "string" },
+        "uploaderName": { "type": "string" },
+        "uploaderRole": { "type": "string" },
+        "likesCount": { "type": "number" },
+        "createdAt": { "type": "string" }
+      },
+      "required": ["id", "title", "type", "url", "album", "date"]
+    },
+    "ParentAccount": {
+      "title": "ParentAccount",
+      "description": "Parent login credentials with Student Code and custom password",
+      "type": "object",
+      "properties": {
+        "studentCode": { "type": "string" },
+        "studentId": { "type": "string" },
+        "studentName": { "type": "string" },
+        "passwordHashOrVal": { "type": "string" },
+        "isPasswordChanged": { "type": "boolean" },
+        "updatedAt": { "type": "string" }
+      },
+      "required": ["studentCode", "passwordHashOrVal"]
+    }
+  },
+  "firestore": {
+    "/users/{userId}": {
+      "schema": "User",
+      "description": "User profile with role (teacher or parent) and linked student id"
+    },
+    "/students/{studentId}": {
+      "schema": "Student",
+      "description": "Student profiles in Class 6/13"
+    },
+    "/attendance/{attendanceId}": {
+      "schema": "AttendanceRecord",
+      "description": "Attendance logs"
+    },
+    "/tasks/{taskId}": {
+      "schema": "TaskItem",
+      "description": "Tasks assigned to whole class, groups, or students"
+    },
+    "/competition_logs/{logId}": {
+      "schema": "CompetitionLog",
+      "description": "Emulation score records"
+    },
+    "/notices/{noticeId}": {
+      "schema": "ParentNotice",
+      "description": "Official notices for parents"
+    },
+    "/parent_contacts/{contactId}": {
+      "schema": "ParentContactLog",
+      "description": "Parent communication records"
+    },
+    "/student_notes/{noteId}": {
+      "schema": "StudentQuickNote",
+      "description": "Teacher pedagogical notes"
+    },
+    "/education_plans/{planId}": {
+      "schema": "EducationGuidancePlan",
+      "description": "Education guidance plans"
+    },
+    "/todos/{todoId}": {
+      "schema": "DailyWeeklyTodo",
+      "description": "Teacher todo list"
+    },
+    "/settings/{settingId}": {
+      "schema": "AppSettings",
+      "description": "Global class settings"
+    },
+    "/class_media/{mediaId}": {
+      "schema": "ClassMediaItem",
+      "description": "Class photo and video memories collection"
+    },
+    "/student_accounts/{studentCode}": {
+      "schema": "ParentAccount",
+      "description": "Parent authentication accounts indexed by student code"
+    }
+  }
+}

@@ -1,0 +1,138 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+    // 1. Global default deny
+    match /{document=**} {
+      allow read, write: if false;
+    }
+
+    // Helper functions
+    function isSignedIn() {
+      return request.auth != null;
+    }
+
+    function isTeacher() {
+      return isSignedIn() && (
+        request.auth.token.email == 'dokimanh1710@gmail.com' ||
+        (exists(/databases/$(database)/documents/users/$(request.auth.uid)) &&
+         get(/databases/$(database)/documents/users/$(request.auth.uid)).data.role == 'teacher')
+      );
+    }
+
+    function isParent() {
+      return isSignedIn() &&
+        exists(/databases/$(database)/documents/users/$(request.auth.uid)) &&
+        get(/databases/$(database)/documents/users/$(request.auth.uid)).data.role == 'parent';
+    }
+
+    function parentLinkedStudentId() {
+      return get(/databases/$(database)/documents/users/$(request.auth.uid)).data.linkedStudentId;
+    }
+
+    function parentLinkedStudentCode() {
+      return get(/databases/$(database)/documents/users/$(request.auth.uid)).data.linkedStudentCode;
+    }
+
+    // Users Collection
+    match /users/{userId} {
+      allow read: if isSignedIn() && (request.auth.uid == userId || isTeacher());
+      allow create: if isSignedIn() && request.auth.uid == userId;
+      allow update: if isSignedIn() && (request.auth.uid == userId || isTeacher());
+      allow delete: if isTeacher();
+    }
+
+    // Students Collection
+    match /students/{studentId} {
+      allow read: if isTeacher() || (
+        isParent() && (
+          studentId == parentLinkedStudentId() ||
+          resource.data.code == parentLinkedStudentCode() ||
+          resource.data.id == parentLinkedStudentId()
+        )
+      );
+      allow write: if isTeacher();
+    }
+
+    // Attendance Collection
+    match /attendance/{attendanceId} {
+      allow read: if isTeacher() || (
+        isParent() && resource.data.studentId == parentLinkedStudentId()
+      );
+      allow write: if isTeacher();
+    }
+
+    // Tasks Collection
+    match /tasks/{taskId} {
+      allow read: if isTeacher() || (
+        isParent() && (
+          resource.data.assignedToType == 'all' ||
+          resource.data.targetStudentId == parentLinkedStudentId()
+        )
+      );
+      allow write: if isTeacher();
+    }
+
+    // Competition Logs Collection
+    match /competition_logs/{logId} {
+      allow read: if isTeacher() || (
+        isParent() && resource.data.studentId == parentLinkedStudentId()
+      );
+      allow write: if isTeacher();
+    }
+
+    // Notices Collection (Class announcements for parents)
+    match /notices/{noticeId} {
+      allow read: if isSignedIn();
+      allow write: if isTeacher();
+    }
+
+    // Parent Contact Logs Collection
+    match /parent_contacts/{contactId} {
+      allow read: if isTeacher() || (
+        isParent() && resource.data.studentId == parentLinkedStudentId()
+      );
+      allow write: if isTeacher();
+    }
+
+    // Student Quick Notes Collection
+    match /student_notes/{noteId} {
+      allow read, write: if isTeacher();
+    }
+
+    // Education Guidance Plans Collection
+    match /education_plans/{planId} {
+      allow read: if isTeacher() || (
+        isParent() && resource.data.studentId == parentLinkedStudentId()
+      );
+      allow write: if isTeacher();
+    }
+
+    // Teacher Todos Collection
+    match /todos/{todoId} {
+      allow read, write: if isTeacher();
+    }
+
+    // Settings Collection
+    match /settings/{settingId} {
+      allow read: if isSignedIn();
+      allow write: if isSignedIn();
+    }
+
+    // Class Media Collection (Photos and videos)
+    match /class_media/{mediaId} {
+      allow read: if isSignedIn();
+      allow write: if isSignedIn();
+    }
+
+    // Student Accounts Collection (Parent accounts and password change)
+    match /student_accounts/{studentCode} {
+      allow read: if isSignedIn();
+      allow write: if isSignedIn();
+    }
+
+    // Test connection doc
+    match /test/{docId} {
+      allow read, write: if isSignedIn();
+    }
+  }
+}

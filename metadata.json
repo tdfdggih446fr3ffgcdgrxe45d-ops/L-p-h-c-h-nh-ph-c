@@ -1,0 +1,8 @@
+{
+  "name": "Remix Lớp Học Hạnh Phúc – Lớp 6/13",
+  "description": "Ứng dụng EdTech quản lý lớp học, thi đua, điểm danh, hồ sơ học sinh và trợ lý AI giáo viên chủ nhiệm Đỗ Kim Anh - Lớp 6/13 THCS.",
+  "requestFramePermissions": [],
+  "majorCapabilities": [
+    "MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"
+  ]
+}
